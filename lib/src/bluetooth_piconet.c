@@ -714,12 +714,14 @@ int btbb_uap_from_header(btbb_packet *pkt, btbb_piconet *pn)
 
 			default: /* CRC success */
 				pn->clk_offset = (count - (pn->first_pkt_time & 0x3f)) & 0x3f;
-				if (!btbb_piconet_get_flag(pn, BTBB_UAP_VALID))
-					printf("Correct CRC! UAP = 0x%x found after %d total packets.\n",
-						UAP, pn->total_packets_observed);
-				else
-					printf("Correct CRC! CLK6 = 0x%x found after %d total packets.\n",
-						pn->clk_offset, pn->total_packets_observed);
+				if (!monitor_mode){
+					if (!btbb_piconet_get_flag(pn, BTBB_UAP_VALID))
+						printf("Correct CRC! UAP = 0x%x found after %d total packets.\n",
+							UAP, pn->total_packets_observed);
+					else
+						printf("Correct CRC! CLK6 = 0x%x found after %d total packets.\n",
+							pn->clk_offset, pn->total_packets_observed);
+				}
 				pn->UAP = UAP;
 				btbb_piconet_set_flag(pn, BTBB_CLK6_VALID, 1);
 				btbb_piconet_set_flag(pn, BTBB_UAP_VALID, 1);
@@ -735,12 +737,14 @@ int btbb_uap_from_header(btbb_packet *pkt, btbb_piconet *pn)
 
 	if (remaining == 1) {
 		pn->clk_offset = (first_clock - (pn->first_pkt_time & 0x3f)) & 0x3f;
-		if (!btbb_piconet_get_flag(pn, BTBB_UAP_VALID))
-			printf("UAP = 0x%x found after %d total packets.\n",
-				pn->clock6_candidates[first_clock], pn->total_packets_observed);
-		else
-			printf("CLK6 = 0x%x found after %d total packets.\n",
-				pn->clk_offset, pn->total_packets_observed);
+		if (!monitor_mode) {
+			if (!btbb_piconet_get_flag(pn, BTBB_UAP_VALID))
+				printf("UAP = 0x%x found after %d total packets.\n",
+					pn->clock6_candidates[first_clock], pn->total_packets_observed);
+			else
+				printf("CLK6 = 0x%x found after %d total packets.\n",
+					pn->clk_offset, pn->total_packets_observed);
+		}
 		pn->UAP = pn->clock6_candidates[first_clock];
 		btbb_piconet_set_flag(pn, BTBB_CLK6_VALID, 1);
 		btbb_piconet_set_flag(pn, BTBB_UAP_VALID, 1);
@@ -860,7 +864,7 @@ int btbb_process_packet(btbb_packet *pkt, btbb_piconet *pn) {
 		btbb_piconet_set_channel_seen(pn, pkt->channel);
 		if(btbb_header_present(pkt) && !btbb_piconet_get_flag(pn, BTBB_UAP_VALID))
 			if (btbb_uap_from_header(pkt, pn) && monitor_mode) {
-				printf("00:00:%02X:%02X:%02X:%02X", pn->UAP, (pn->LAP >> 16) & 0xFF, (pn->LAP >> 8) & 0xFF, pn->LAP & 0xFF);
+				printf("New device: 00:00:%02X:%02X:%02X:%02X\n", pn->UAP, (pn->LAP >> 16) & 0xFF, (pn->LAP >> 8) & 0xFF, pn->LAP & 0xFF);
 			}
 		return 0;
 	}

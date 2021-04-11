@@ -67,6 +67,12 @@ int btbb_init_survey() {
 	return 0;
 }
 
+static int monitor_mode = 0;
+int btbb_init_monitor() {
+	monitor_mode = 1;
+	return 0;
+}
+
 void btbb_init_piconet(btbb_piconet *pn, uint32_t lap)
 {
 	pn->LAP = lap;
@@ -849,11 +855,13 @@ btbb_piconet *btbb_next_survey_result() {
 }
 
 int btbb_process_packet(btbb_packet *pkt, btbb_piconet *pn) {
-	if (survey_mode) {
+	if (monitor_mode || survey_mode) {
 		pn = get_piconet(btbb_packet_get_lap(pkt));
 		btbb_piconet_set_channel_seen(pn, pkt->channel);
 		if(btbb_header_present(pkt) && !btbb_piconet_get_flag(pn, BTBB_UAP_VALID))
-			btbb_uap_from_header(pkt, pn);
+			if (btbb_uap_from_header(pkt, pn) && monitor_mode) {
+				printf("00:00:%02X:%02X:%02X:%02X", pn->UAP, (pn->LAP >> 16) & 0xFF, (pn->LAP >> 8) & 0xFF, pn->LAP & 0xFF);
+			}
 		return 0;
 	}
 

@@ -537,6 +537,12 @@ print128:
 	}
 }
 
+void lell_print_reduced(const lell_packet* pkt){
+	if (lell_packet_is_data(pkt) && pkt->flags.as_bits.access_address_ok){
+		printf("AA: %u\n", pkt->access_address);
+	}
+}
+
 void lell_print(const lell_packet *pkt)
 {
 	int i, opcode;

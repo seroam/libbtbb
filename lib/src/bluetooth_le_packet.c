@@ -539,7 +539,7 @@ print128:
 
 void lell_print_reduced(const lell_packet* pkt){
 	if (lell_packet_is_data(pkt) && pkt->flags.as_bits.access_address_ok){
-		printf("AA: %u\n", pkt->access_address);
+		printf("AA: 0x%012X\n", pkt->access_address);
 	}
 }
 

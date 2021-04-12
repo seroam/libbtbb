@@ -558,7 +558,7 @@ void lell_print_adv(const lell_packet *pkt)
 					for (; i >= 0; --i){
 						printf(":%02x", pkt->symbols[6+i]);
 					}
-					printf(" random=%s type=%s channel=%d\n", pkt->adv_tx_add ? "true" : "false", (pkt), pkt->channel_idx);
+					printf(" random=%s type=%s channel=%d\n", pkt->adv_tx_add ? "true" : "false", lell_get_adv_type_str(pkt), pkt->channel_idx);
 				}
 		}
 	}

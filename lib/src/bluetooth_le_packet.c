@@ -543,6 +543,28 @@ void lell_print_reduced(const lell_packet* pkt){
 	}
 }
 
+void lell_print_adv(const lell_packet *pkt)
+{
+	if (lell_packet_is_data(pkt)) {
+		printf("FOUND A DATA PACKET ON ADVERTISEMENT CHANNEL\n");
+	} else {
+		switch(pkt->adv_type) {
+			case ADV_IND:
+			case ADV_NONCONN_IND:
+			case ADV_SCAN_IND:
+				if (pkt->flags.as_bits.access_address_ok) {
+					int i=5;
+					printf("addr=%02x", pkt->symbols[6+i--]);
+					for (; i >= 0; --i){
+						printf(":%02x", pkt->symbols[6+i]);
+					}
+					printf(" random=%s type=%s channel=%d\n", pkt->adv_tx_add ? "true" : "false", (pkt), pkt->channel_idx);
+				}
+		}
+	}
+}
+
+
 void lell_print(const lell_packet *pkt)
 {
 	int i, opcode;

@@ -53,6 +53,9 @@
 #define BTBB_TRANSPORT_ACL     0x03
 #define BTBB_TRANSPORT_CSB     0x04
 
+/* Flags */
+#define BTBB_NEW_UAP    0b1
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -279,6 +282,14 @@ int lell_pcap_append_ppi_packet(lell_pcap_handle * h, const uint64_t ns,
                                 const int8_t rssi_avg, const uint8_t rssi_count,
                                 const lell_packet *pkt);
 int lell_pcap_close(lell_pcap_handle *h);
+
+typedef struct btbb_monitor_handle btbb_monitor_handle;
+int btbb_monitor_open_pipe(const char * filename, btbb_monitor_handle ** ph);
+int btbb_monitor_close(btbb_monitor_handle* h);
+int btbb_monitor_write_btbr(uint16_t flags, uint8_t uap, uint32_t lap, uint32_t timestamp);
+int btbb_monitor_write_btle(uint32_t aa, uint32_t timestamp);
+
+
 
 #ifdef __cplusplus
 } // __cplusplus defined.

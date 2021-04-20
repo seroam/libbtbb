@@ -864,7 +864,10 @@ int btbb_process_packet(btbb_packet *pkt, btbb_piconet *pn) {
 		btbb_piconet_set_channel_seen(pn, pkt->channel);
 		if(btbb_header_present(pkt) && !btbb_piconet_get_flag(pn, BTBB_UAP_VALID))
 			if (btbb_uap_from_header(pkt, pn) && monitor_mode) {
+				btbb_monitor_write_btbr(BTBB_NEW_UAP, pn->UAP, pn->LAP, time(NULL));
+				// TODO: Remove printf statement
 				printf("New device: 00:00:%02X:%02X:%02X:%02X\n", pn->UAP, (pn->LAP >> 16) & 0xFF, (pn->LAP >> 8) & 0xFF, pn->LAP & 0xFF);
+
 			}
 		return 0;
 	}

@@ -30,6 +30,7 @@ set(c_sources ${CMAKE_CURRENT_SOURCE_DIR}/bluetooth_packet.c
               ${CMAKE_CURRENT_SOURCE_DIR}/pcap.c
               ${CMAKE_CURRENT_SOURCE_DIR}/pcapng.c
               ${CMAKE_CURRENT_SOURCE_DIR}/pcapng-bt.c
+              ${CMAKE_CURRENT_SOURCE_DIR}/monitor.c
 			  CACHE INTERNAL "List of C sources")
 set(c_headers ${CMAKE_CURRENT_SOURCE_DIR}/btbb.h
 			  CACHE INTERNAL "List of C headers")

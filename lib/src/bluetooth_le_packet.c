@@ -29,6 +29,7 @@
 #include "bluetooth_le_packet.h"
 #include <ctype.h>
 #include <string.h>
+#include <time.h>
 
 /* company identifier lookup */
 const char *bt_compidtostr(uint16_t compid);
@@ -541,6 +542,16 @@ void lell_print_reduced(const lell_packet* pkt){
 	if (lell_packet_is_data(pkt) && pkt->flags.as_bits.access_address_ok){
 		printf("AA: 0x%06X\n", pkt->access_address);
 	}
+}
+
+void lell_report_btle_adv(lell_packet const * pkt){
+	
+	if (pkt->flags.as_bits.access_address_ok &&
+		(pkt->adv_type == ADV_IND ||
+		pkt->adv_type == ADV_NONCONN_IND ||
+		pkt->adv_type == ADV_SCAN_IND)) {
+			btbb_monitor_write_btle_adv(pkt->adv_type, pkt->adv_tx_add, &pkt->symbols[6], time(NULL));
+		}
 }
 
 void lell_print_adv(const lell_packet *pkt)

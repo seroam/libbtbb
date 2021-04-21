@@ -242,6 +242,7 @@ unsigned lell_packet_is_data(const lell_packet *pkt);
 unsigned lell_get_channel_index(const lell_packet *pkt);
 unsigned lell_get_channel_k(const lell_packet *pkt);
 const char * lell_get_adv_type_str(const lell_packet *pkt);
+void lell_report_btle_adv(lell_packet const * pkt);
 void lell_print(const lell_packet *pkt);
 
 typedef struct lell_pcapng_handle lell_pcapng_handle;
@@ -286,8 +287,9 @@ int lell_pcap_close(lell_pcap_handle *h);
 typedef struct btbb_monitor_handle btbb_monitor_handle;
 int btbb_monitor_open_pipe(const char * filename, btbb_monitor_handle ** ph);
 int btbb_monitor_close(btbb_monitor_handle* h);
-int btbb_monitor_write_btbr(uint16_t flags, uint8_t uap, uint32_t lap, uint32_t timestamp);
-int btbb_monitor_write_btle(uint32_t aa, uint32_t timestamp);
+void btbb_monitor_write_btbr(uint16_t flags, uint8_t uap, uint32_t lap, uint32_t timestamp);
+void btbb_monitor_write_btle(uint32_t aa, uint32_t timestamp);
+void btbb_monitor_write_btle_adv(uint8_t type, uint8_t random, uint8_t const * mac, uint32_t timestamp);
 
 
 

@@ -25,6 +25,7 @@
 #include "uthash.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 int perm_table_initialized = 0;
 char perm_table[0x20][0x20][0x200];

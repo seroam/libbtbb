@@ -3,6 +3,8 @@
 
 #include "btbb.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define byte	unsigned char
 
@@ -50,7 +52,7 @@ int btbb_monitor_open_pipe(const char * filename, btbb_monitor_handle ** ph){
 		
 		FILE *monitor_file = fopen(filename, "wb");
 
-		if (monitor_file == NULL) { return NULL; };
+		if (monitor_file == NULL) { return -PIPE_INVALID_HANDLE; };
 
 		handle->monitor_file = monitor_file;
 		monitor_handle.monitor_file = monitor_file;
@@ -86,7 +88,7 @@ int btbb_monitor_close(btbb_monitor_handle * h)
 	return -PIPE_INVALID_HANDLE;
 }
 
-int btbb_monitor_write_btbr(uint16_t flags, uint8_t uap, uint32_t lap, uint32_t timestamp) {
+void btbb_monitor_write_btbr(uint16_t flags, uint8_t uap, uint32_t lap, uint32_t timestamp) {
 
 	ind_btbr.lap = lap;
 	ind_btbr.uap = uap;
@@ -97,7 +99,7 @@ int btbb_monitor_write_btbr(uint16_t flags, uint8_t uap, uint32_t lap, uint32_t 
 	fflush(monitor_handle.monitor_file);
 }
 
-int btbb_monitor_write_btle(uint32_t aa, uint32_t timestamp) {
+void btbb_monitor_write_btle(uint32_t aa, uint32_t timestamp) {
 
 	ind_btle.aa = aa;
 	ind_btle.timestamp = timestamp;
@@ -106,8 +108,14 @@ int btbb_monitor_write_btle(uint32_t aa, uint32_t timestamp) {
 	fflush(monitor_handle.monitor_file);
 }
 
-int btbb_monitor_write_btle_adv(uint8_t type, uint8_t random, char const * mac, uint32_t timestamp){
+void btbb_monitor_write_btle_adv(uint8_t type, uint8_t random, uint8_t const * mac, uint32_t timestamp){
+	ind_btle_adv.type = type;
+	ind_btle_adv.random = random;
+	memcpy(ind_btle_adv.mac, mac, 6);
+	ind_btle_adv.timestamp = timestamp;
 
+	fwrite(&ind_btle_adv, sizeof(indicator_btle_adv), 1, monitor_handle.monitor_file);
+	fflush(monitor_handle.monitor_file);
 }
 
 #endif /* MONITOR_H_ */

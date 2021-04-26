@@ -538,12 +538,6 @@ print128:
 	}
 }
 
-void lell_print_reduced(const lell_packet* pkt){
-	if (lell_packet_is_data(pkt) && pkt->flags.as_bits.access_address_ok){
-		printf("AA: 0x%06X\n", pkt->access_address);
-	}
-}
-
 void lell_report_btle_adv(lell_packet const * pkt){
 	
 	if (pkt->flags.as_bits.access_address_ok &&

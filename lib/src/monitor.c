@@ -35,7 +35,7 @@ struct indicator_btbr {
 struct indicator_btle {
 	uint32_t aa;
 	uint32_t timestamp;
-	int32_t rssi
+	int32_t rssi;
 } ind_btle;
 
 struct indicator_btle_adv {

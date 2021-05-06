@@ -35,6 +35,7 @@ struct indicator_btbr {
 struct indicator_btle {
 	uint32_t aa;
 	uint32_t timestamp;
+	int32_t rssi
 } ind_btle;
 
 struct indicator_btle_adv {
@@ -42,6 +43,7 @@ struct indicator_btle_adv {
 	uint8_t random;
 	char mac[6];
 	uint32_t timestamp;
+	int32_t rssi;
 } ind_btle_adv;
 
 int btbb_monitor_open_pipe(const char * filename, btbb_monitor_handle ** ph){
@@ -99,20 +101,22 @@ void btbb_monitor_write_btbr(uint16_t flags, uint8_t uap, uint32_t lap, uint32_t
 	fflush(monitor_handle.monitor_file);
 }
 
-void btbb_monitor_write_btle(uint32_t aa, uint32_t timestamp) {
+void btbb_monitor_write_btle(uint32_t aa, uint32_t timestamp, int32_t rssi) {
 
 	ind_btle.aa = aa;
 	ind_btle.timestamp = timestamp;
+	ind_btle.rssi = rssi;
 
 	fwrite(&ind_btle, sizeof(indicator_btle), 1, monitor_handle.monitor_file);
 	fflush(monitor_handle.monitor_file);
 }
 
-void btbb_monitor_write_btle_adv(uint8_t type, uint8_t random, uint8_t const * mac, uint32_t timestamp){
+void btbb_monitor_write_btle_adv(uint8_t type, uint8_t random, uint8_t const * mac, uint32_t timestamp, int32_t rssi){
 	ind_btle_adv.type = type;
 	ind_btle_adv.random = random;
 	memcpy(ind_btle_adv.mac, mac, 6);
 	ind_btle_adv.timestamp = timestamp;
+	ind_btle_adv.rssi = rssi;
 
 	fwrite(&ind_btle_adv, sizeof(indicator_btle_adv), 1, monitor_handle.monitor_file);
 	fflush(monitor_handle.monitor_file);

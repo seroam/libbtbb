@@ -538,13 +538,13 @@ print128:
 	}
 }
 
-void lell_report_btle_adv(lell_packet const * pkt){
+void lell_report_btle_adv(lell_packet const * pkt, int32_t rssi){
 	
 	if (pkt->flags.as_bits.access_address_ok &&
 		(pkt->adv_type == ADV_IND ||
 		pkt->adv_type == ADV_NONCONN_IND ||
 		pkt->adv_type == ADV_SCAN_IND)) {
-			btbb_monitor_write_btle_adv(pkt->adv_type, pkt->adv_tx_add, &pkt->symbols[6], time(NULL));
+			btbb_monitor_write_btle_adv(pkt->adv_type, pkt->adv_tx_add, &pkt->symbols[6], time(NULL), rssi);
 		}
 }
 

@@ -24,6 +24,7 @@
 
 #include <stdint.h>
 
+
 #define BTBB_WHITENED    0
 #define BTBB_NAP_VALID   1
 #define BTBB_UAP_VALID   2
@@ -55,6 +56,11 @@
 
 /* Flags */
 #define BTBB_NEW_UAP    0b1
+
+/* Advertisement types for monitoring */
+#define COMPANY_ID_UNKNOWN      0xffff
+#define SERVICE_UUID_UNKNOWN    0
+
 
 #ifdef __cplusplus
 extern "C"
@@ -290,7 +296,7 @@ int btbb_monitor_open_pipe(const char * filename, btbb_monitor_handle ** ph);
 int btbb_monitor_close(btbb_monitor_handle* h);
 void btbb_monitor_write_btbr(uint16_t flags, uint8_t uap, uint32_t lap, uint32_t timestamp);
 void btbb_monitor_write_btle(uint32_t aa, uint32_t timestamp, int32_t rssi);
-void btbb_monitor_write_btle_adv(uint8_t type, uint8_t random, uint8_t const * mac, uint32_t timestamp, int32_t rssi);
+void btbb_monitor_write_btle_adv(uint8_t type, uint8_t random, uint8_t const * mac, uint32_t timestamp, int32_t rssi, uint16_t service_uuid, uint16_t company_id);
 
 
 

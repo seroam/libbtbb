@@ -44,6 +44,8 @@ struct indicator_btle_adv {
 	char mac[6];
 	uint32_t timestamp;
 	int32_t rssi;
+	uint16_t service_uuid;
+	uint16_t company_id;
 } ind_btle_adv;
 
 int btbb_monitor_open_pipe(const char * filename, btbb_monitor_handle ** ph){
@@ -111,12 +113,14 @@ void btbb_monitor_write_btle(uint32_t aa, uint32_t timestamp, int32_t rssi) {
 	fflush(monitor_handle.monitor_file);
 }
 
-void btbb_monitor_write_btle_adv(uint8_t type, uint8_t random, uint8_t const * mac, uint32_t timestamp, int32_t rssi){
+void btbb_monitor_write_btle_adv(uint8_t type, uint8_t random, uint8_t const * mac, uint32_t timestamp, int32_t rssi, uint16_t service_uuid, uint16_t company_id){
 	ind_btle_adv.type = type;
 	ind_btle_adv.random = random;
 	memcpy(ind_btle_adv.mac, mac, 6);
 	ind_btle_adv.timestamp = timestamp;
 	ind_btle_adv.rssi = rssi;
+	ind_btle_adv.service_uuid = service_uuid;
+	ind_btle_adv.company_id = company_id;
 
 	fwrite(&ind_btle_adv, sizeof(indicator_btle_adv), 1, monitor_handle.monitor_file);
 	fflush(monitor_handle.monitor_file);

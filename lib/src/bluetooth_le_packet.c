@@ -395,6 +395,44 @@ static void _dump_uuid(const uint8_t *uuid) {
 }
 
 // Refer to pg 1735 of Bluetooth Core Spec 4.0
+static void monitor_adv_info(const uint8_t *buf, int len, uint16_t * service_uuid, uint16_t * company_id) {
+	int pos = 0;
+	int sublen, i;
+	uint8_t type;
+
+	while (pos < len) {
+		sublen = buf[pos];
+		++pos;
+		if (pos + sublen > len) {
+			return;
+		}
+		if (sublen == 0) {
+			return;
+		}
+		type = buf[pos];
+		switch (type) {
+			case 0x03:
+				if ((sublen - 1) % 2 == 0) {
+					for (i = 0; i < sublen - 1; i += 2) {
+						uint16_t *uuid = (uint16_t *)&buf[pos+1+i];
+						*service_uuid = *uuid;
+					}
+				}
+				break;
+			case 0xff:
+				if (sublen - 1 >= 2) {
+					*company_id = (buf[pos+2] << 8) | buf[pos+1];
+				}
+				break;
+			default:
+				break;
+		}
+		pos += sublen;
+	}
+}
+
+
+// Refer to pg 1735 of Bluetooth Core Spec 4.0
 static void _dump_scan_rsp_data(const uint8_t *buf, int len) {
 	int pos = 0;
 	int sublen, i;
@@ -544,7 +582,12 @@ void lell_report_btle_adv(lell_packet const * pkt, int32_t rssi){
 		(pkt->adv_type == ADV_IND ||
 		pkt->adv_type == ADV_NONCONN_IND ||
 		pkt->adv_type == ADV_SCAN_IND)) {
-			btbb_monitor_write_btle_adv(pkt->adv_type, pkt->adv_tx_add, &pkt->symbols[6], time(NULL), rssi);
+			uint16_t service_uuid = SERVICE_UUID_UNKNOWN;
+			uint16_t company_id = COMPANY_ID_UNKNOWN;
+			if (pkt->length-6 > 0) {
+					monitor_adv_info(&pkt->symbols[12], pkt->length-6, &service_uuid, &company_id);
+				}
+			btbb_monitor_write_btle_adv(pkt->adv_type, pkt->adv_tx_add, &pkt->symbols[6], time(NULL), rssi, service_uuid, company_id);
 		}
 }
 
